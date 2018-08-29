@@ -1,0 +1,15 @@
+function checkSupplyDecks()
+  result={}
+  for i,guid in pairs(const.game.supplies) do
+    deck_board = getObjectFromGUID(guid)
+    if deck_board==nil then
+      return false, result, "Missing GUID:" .. guid
+    end
+    objectsOnTop = getObjectsOnTop(deck_board.getPosition())
+    if(#objectsOnTop ~= 1)then return  false, result, "Missing or wrong card on deck board:" .. i end
+    card = objectsOnTop[1].hit_object
+    if(not isCard(card)) then return false, result, "Missing or wrong card on deck:" .. i end
+    result[#result+1] = card
+  end
+  return true, result
+end
