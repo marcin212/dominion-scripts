@@ -9,16 +9,8 @@ const = {
   },
   game = {
     supplies = {
-      1 = "dfdf12",
-      2 = "c12ae5",
-      3 = "4cff3a",
-      4 = "118b86",
-      5 = "f31543",
-      6 = "c3933e",
-      7 = "fedc5f",
-      8 = "a70692",
-      9 = "6481ea",
-      10 = "af6c9d"
+      "dfdf12", "c12ae5", "4cff3a", "118b86", "f31543",
+      "c3933e", "fedc5f", "a70692", "6481ea", "af6c9d"
     },
     stacks = {
       treasure = { gold = "43d9c7", silver = "92081a", copper = "338aa8" },
