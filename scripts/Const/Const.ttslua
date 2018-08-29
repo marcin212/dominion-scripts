@@ -1,22 +1,22 @@
 const = {
-  player = {
-    Red = { deck = "2be52d", discard = "d6e31e" },
-    Yellow = { deck = "6b58eb", discard = "18cb6b" },
-    Green = { deck = "68c229", discard = "db4b28" },
-    Blue = { deck = "f4ce39", discard = "0b9a66" },
-    Pink = { deck = "5277b2", discard = "460d01" },
-    Brown = { deck = "00785f", discard = "596d36" }
-  },
-  game = {
-    supplies = {
-      "dfdf12", "c12ae5", "4cff3a", "118b86", "f31543",
-      "c3933e", "fedc5f", "a70692", "6481ea", "af6c9d"
+    player = {
+        Red = { deck = "2be52d", discard = "d6e31e" },
+        Yellow = { deck = "6b58eb", discard = "18cb6b" },
+        Green = { deck = "68c229", discard = "db4b28" },
+        Blue = { deck = "f4ce39", discard = "0b9a66" },
+        Pink = { deck = "5277b2", discard = "460d01" },
+        Brown = { deck = "00785f", discard = "596d36" }
     },
-    stacks = {
-      treasure = { gold = "43d9c7", silver = "92081a", copper = "338aa8" },
-      victory = { estate = "13fd17", duchie = "f92968", province = "4ace7a" },
-      curse = "41ba46"
-    },
-    trash = "70b9f6",
-  }
+    game = {
+        supplies = {
+            "dfdf12", "c12ae5", "4cff3a", "118b86", "f31543",
+            "c3933e", "fedc5f", "a70692", "6481ea", "af6c9d"
+        },
+        stacks = {
+            treasure = { gold = "43d9c7", silver = "92081a", copper = "338aa8" },
+            victory = { estate = "13fd17", duchie = "f92968", province = "4ace7a" },
+            curse = "41ba46"
+        },
+        trash = "70b9f6",
+    }
 }

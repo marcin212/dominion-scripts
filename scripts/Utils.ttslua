@@ -1,25 +1,25 @@
 function getObjectsOnTop(objectPos)
-  return Physics.cast({
-    origin= objectPos,
-    direction = {0,1,0},
-    size = {x=0.1,y=0.1,z=0.1},
-    max_distance = 0.1,
-    type = 1,--Ray cast
-    debug=true
-  })
+    return Physics.cast({
+        origin = objectPos,
+        direction = {0, 1, 0},
+        size = {x = 0.1, y = 0.1, z = 0.1},
+        max_distance = 0.1,
+        type = 1, --Ray cast
+        debug = true
+    })
 end
 
 function isCard(object)
-  return object~=nil and object.tag == "Card"
+    return object ~= nil and object.tag == "Card"
 end
 
 function isDeck(object)
-  return object~=nil and object.tag == "Deck"
+    return object ~= nil and object.tag == "Deck"
 end
 
 function stackOnTop(object, times)
-  pos = object.getPosition()
-  for i=1,times do
-    object.clone({position=pos})
-  end
+    pos = object.getPosition()
+    for i = 1, times do
+        object.clone({position = pos})
+    end
 end

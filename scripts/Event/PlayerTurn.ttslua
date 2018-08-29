@@ -1,34 +1,34 @@
 function onPlayerTurn(color)
-  -- TODO
+    -- TODO
 end
 
 
 function drawCardFromDeck(color)
-  deckPos = getObjectFromGUID(const.player[color].deck).getPosition()
-  deck = getObjectsOnTop(deckPos)[1]
-  if(deck == nil)then
-    print("(" .. color .. ") Deck is empty")
-    moveCardsToDiscard(color)
-    moveDiscardToDeck(color)
-  else
-    deck.hit_object.deal(1, color)
-  end
+    deckPos = getObjectFromGUID(const.player[color].deck).getPosition()
+    deck = getObjectsOnTop(deckPos)[1]
+    if(deck == nil)then
+        print("(" .. color .. ") Deck is empty")
+        moveCardsToDiscard(color)
+        moveDiscardToDeck(color)
+    else
+        deck.hit_object.deal(1, color)
+    end
 end
 
 function moveCardsToDiscard(color)
-  -- TODO
+    -- TODO
 end
 
 function moveDiscardToDeck(color)
-  discardPos = getObjectFromGUID(const.player[color].discard).getPosition()
-  discard = getObjectsOnTop(discardPos)[1]
-  if(discard == nil)then
-    print("(" .. color .. ") Discard is empty")
-  else
-    discard = discard.hit_object
-    deckPosition = getObjectFromGUID(const.player[color].deck).getPosition()
-    discard.shuffle()
-    discard.flip()
-    discard.setPositionSmooth(deckPosition, true, false)
-  end
+    discardPos = getObjectFromGUID(const.player[color].discard).getPosition()
+    discard = getObjectsOnTop(discardPos)[1]
+    if(discard == nil)then
+        print("(" .. color .. ") Discard is empty")
+    else
+        discard = discard.hit_object
+        deckPosition = getObjectFromGUID(const.player[color].deck).getPosition()
+        discard.shuffle()
+        discard.flip()
+        discard.setPositionSmooth(deckPosition, true, false)
+    end
 end

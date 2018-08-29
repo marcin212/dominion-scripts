@@ -1,51 +1,51 @@
 function checkSupplyDecks()
-  result={}
-  for i,guid in pairs(const.game.supplies) do
-    deck_board = getObjectFromGUID(guid)
-    if deck_board==nil then
-      return false, result, "Missing GUID:" .. guid
+    result = {}
+    for i, guid in pairs(const.game.supplies) do
+        deck_board = getObjectFromGUID(guid)
+        if deck_board == nil then
+            return false, result, "Missing GUID:" .. guid
+        end
+        objectsOnTop = getObjectsOnTop(deck_board.getPosition())
+        if(#objectsOnTop ~= 1)then return false, result, "Missing or wrong card on deck board:" .. i end
+        card = objectsOnTop[1].hit_object
+        if(not isCard(card)) then return false, result, "Missing or wrong card on deck:" .. i end
+        result[#result + 1] = card
     end
-    objectsOnTop = getObjectsOnTop(deck_board.getPosition())
-    if(#objectsOnTop ~= 1)then return  false, result, "Missing or wrong card on deck board:" .. i end
-    card = objectsOnTop[1].hit_object
-    if(not isCard(card)) then return false, result, "Missing or wrong card on deck:" .. i end
-    result[#result+1] = card
-  end
-  return true, result
+    return true, result
 end
 
 function dealStartCards(stack, amount)
-  for color, _ in pairs(const.player) do
-    if(Player[color].seated)then
-      print("deal to " .. color)
-      stack.deal(amount, color)
+    for color, _ in pairs(const.player) do
+        if(Player[color].seated)then
+            print("deal to " .. color)
+            stack.deal(amount, color)
+        end
     end
-  end
 end
 
 function setupStartCards()
-  copperStack = getObjectFromGUID(const.game.stacks.treasure.copper)
-  victoryStack = getObjectFromGUID(const.game.stacks.victory.estate)
-  if(not isDeck(copperStack) or not isDeck(victoryStack)) then
-    print("copper or estate stack not found")
-    return
-  end
-  copperStack2 = copperStack.clone({position = {0,10,0}, callback_function = function(obj)  dealStartCards(obj, 7) obj.destruct() end})
-  copperStack2.use_gravity = false
-  victoryStack2 = victoryStack.clone({position = {0,20,0}, callback_function = function(obj)  dealStartCards(obj, 3) obj.destruct() end})
-  victoryStack2.use_gravity = false
+    copperStack = getObjectFromGUID(const.game.stacks.treasure.copper)
+    victoryStack = getObjectFromGUID(const.game.stacks.victory.estate)
+    if(not isDeck(copperStack) or not isDeck(victoryStack)) then
+        print("copper or estate stack not found")
+        return
+    end
+    copperStack2 = copperStack.clone({position = {0, 10, 0}, callback_function = function(obj) dealStartCards(obj, 7) obj.destruct() end})
+    copperStack2.use_gravity = false
+    victoryStack2 = victoryStack.clone({position = {0, 20, 0}, callback_function = function(obj) dealStartCards(obj, 3) obj.destruct() end})
+    victoryStack2.use_gravity = false
 end
 
 
 function SetupGame()
-  isValid, cards, error = checkSupplyDecks()
-if(isValid)then
-  setupStartCards()
-  for _,card in pairs(cards) do
-    stackOnTop(card, 9)
-  end
-else
-  print("SupplyDecksError: " .. error)
-end
+    isValid, cards, error = checkSupplyDecks()
+    if(isValid)then
+        setupStartCards()
+        for _, card in pairs(cards) do
+            stackOnTop(card, 9)
+        end
+    else
+        print("SupplyDecksError: " .. error)
+    end
 
 end

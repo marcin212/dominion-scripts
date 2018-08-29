@@ -1,7 +1,7 @@
 #include Utils
-#include Const/Const
+#include Const\Const
 #include SetupSupplyDecks
-#include Event/PlayerTurn
+#include Event\PlayerTurn
 
 --[[ Lua code. See documentation: http://berserk-games.com/knowledgebase/scripting/ --]]
 
@@ -24,15 +24,15 @@ end
 
 function onScriptingButtonUp(index, color)
     if(index == 1)then
-      drawCardFromDeck(color)
+        drawCardFromDeck(color)
     elseif index == 2 then
-      SetupGame()
+        SetupGame()
     end
 end
 
-function onObjectPickUp( player_color,  picked_up_object)
-  print(player_color)
-  print(picked_up_object.guid)
-  print(picked_up_object.getName())
-  print("----")
+function onObjectPickUp( player_color, picked_up_object)
+    print(player_color)
+    print(picked_up_object.guid)
+    print(picked_up_object.getName())
+    print("----")
 end
