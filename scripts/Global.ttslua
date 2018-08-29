@@ -1,3 +1,5 @@
+#include Utils
+
 --[[ Lua code. See documentation: http://berserk-games.com/knowledgebase/scripting/ --]]
 
 --[[ The OnLoad function. This is called after everything in the game save finishes loading.
@@ -34,27 +36,15 @@ function compareSnapPoint(position, snap_point_b)
 end
 end
 
-function printPosition(pos)
-   print("(" .. pos.x .. ", ".. pos.y .."," .. pos.z .. ")")
-end
-
 function onScriptingButtonUp(index, color)
-    print(index)
     if(index == 1)then
       obj = getObjectFromGUID(example_guid)
-        snap = obj.getSnapPoints()[1]
-        printPosition(snap.position)
-          cardObj = getObjectFromGUID(card)
-          printPosition(cardObj.getJSON())
-          print(cardObj.use_snap_points)
-        for a,g  in  pairs(getAllObjects()) do
-          newS = g.getPosition()
-
-            if(compareSnapPoint(newS, snap))then
-              print("found->" .. g.getPosition().x)
-            end
+        snapPos = obj.getPosition()
+        cast = getObjectsOnTop(snapPos)
+        print("Rozmiar: " .. #cast)
+        for _,o in pairs(cast) do
+          print(o.hit_object.getName())
         end
-
     end
 end
 

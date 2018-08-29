@@ -1,0 +1,10 @@
+function getObjectsOnTop(objectPos)
+  return Physics.cast({
+    origin= objectPos,
+    direction = {0,1,0},
+    size = {x=0.1,y=0.1,z=0.1},
+    max_distance = 0.1,
+    type = 1,--Sphere cast
+    debug=true
+  })
+end
