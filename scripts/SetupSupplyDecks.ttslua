@@ -14,6 +14,15 @@ function checkSupplyDecks()
   return true, result
 end
 
+function dealStartCards(stack, amount)
+  for color, _ in pairs(const.player) do
+    if(Player[color].seated)then
+      print("deal to " .. color)
+      stack.deal(amount, color)
+    end
+  end
+end
+
 function setupStartCards()
   copperStack = getObjectFromGUID(const.game.stacks.treasure.copper)
   victoryStack = getObjectFromGUID(const.game.stacks.victory.estate)
@@ -21,31 +30,17 @@ function setupStartCards()
     print("copper or estate stack not found")
     return
   end
-  print(copperStack.getObjects()[1].guid)
-  copper = copperStack.getObjectFromGUID(copperStack.getObjects()[1].guid)
-  victory = victoryStack.getObjectFromGUID(victoryStack.getObjects()[1].guid)
-  print(copper)
-  if(not isCard(copper) or not isCard(victory)) then
-    print("copper or estate card not found")
-    return
-  end
-    -- Bag or Deck returns {{string name, string description, string guid, int index, string lua_script, string lust_script_state}, ...}
- for color, _ in pairs(const.player) do
-   if(Player[color].seated)then
-     for i=1,7 do
-       copper.clone({position = copper.getPosition()}).deal(1, color)
-     end
-     for i=1,3 do
-       victory.clone({position = victory.getPosition()}).deal(1, color)
-     end
-   end
- end
+  copperStack2 = copperStack.clone({position = {0,10,0}, callback_function = function(obj)  dealStartCards(obj, 7) obj.destruct() end})
+  copperStack2.use_gravity = false
+  victoryStack2 = victoryStack.clone({position = {0,20,0}, callback_function = function(obj)  dealStartCards(obj, 3) obj.destruct() end})
+  victoryStack2.use_gravity = false
 end
 
 
 function SetupGame()
   isValid, cards, error = checkSupplyDecks()
 if(isValid)then
+  setupStartCards()
   for _,card in pairs(cards) do
     stackOnTop(card, 9)
   end
@@ -53,5 +48,4 @@ else
   print("SupplyDecksError: " .. error)
 end
 
-setupStartCards()
 end
