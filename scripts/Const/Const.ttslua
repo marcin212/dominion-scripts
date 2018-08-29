@@ -5,7 +5,7 @@ const = {
     green = { deck = "68c229", discard = "db4b28" },
     blue = { deck = "f4ce39", discard = "0b9a66" },
     pink = { deck = "5277b2", discard = "460d01" },
-    brown = { deck = "00785f", discard = "596d36" },
+    brown = { deck = "00785f", discard = "596d36" }
   },
   game = {
     supplies = {
