@@ -20,6 +20,6 @@ end
 function stackOnTop(object, times)
   pos = object.getPosition()
   for i=1,times do
-    objh.clone({position=pos})
+    object.clone({position=pos})
   end
 end
