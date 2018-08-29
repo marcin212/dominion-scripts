@@ -1,0 +1,30 @@
+const = {
+  player = {
+    red = { deck = "2be52d", discard = "d6e31e" },
+    yellow = { deck = "6b58eb", discard = "18cb6b" },
+    green = { deck = "68c229", discard = "db4b28" },
+    blue = { deck = "f4ce39", discard = "0b9a66" },
+    pink = { deck = "5277b2", discard = "460d01" },
+    brown = { deck = "00785f", discard = "596d36" },
+  },
+  game = {
+    supplies = {
+      1 = "dfdf12",
+      2 = "c12ae5",
+      3 = "4cff3a",
+      4 = "118b86",
+      5 = "f31543",
+      6 = "c3933e",
+      7 = "fedc5f",
+      8 = "a70692",
+      9 = "6481ea",
+      10 = "af6c9d"
+    },
+    stacks = {
+      treasure = { gold = "43d9c7", silver = "92081a", copper = "338aa8" },
+      victory = { estate = "13fd17", duchie = "f92968", province = "4ace7a" },
+      curse = "41ba46"
+    },
+    trash = "70b9f6",
+  }
+}
