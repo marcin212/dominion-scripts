@@ -1,5 +1,6 @@
 #include Utils
-
+#include Const/Const
+#include SetupSupplyDecks
 --[[ Lua code. See documentation: http://berserk-games.com/knowledgebase/scripting/ --]]
 
 --[[ The OnLoad function. This is called after everything in the game save finishes loading.
@@ -18,43 +19,23 @@ function onPlayerChangedColor(color)
     --[[ print('Player changed color! ' .. color .. ' ' .. colorToPlayerName(color)) --]]
 end
 
-example_guid = "dfdf12"
-card = "b89a62"
-function onObjectEnterScriptingZone( zone,  enter_object)
-  print(zone)
-  print(enter_object)
-    print("----")
-end
-
-function compareSnapPoint(position, snap_point_b)
-  if(position==nil and snap_point_b==nil) then return true end
-
- if(position~=nil and snap_point_b~=nil and position.x == snap_point_b.position.x and position.y == snap_point_b.position.y and position.z == snap_point_b.position.z)then
-  return true
- else
-  return false
-end
-end
 
 function onScriptingButtonUp(index, color)
     if(index == 1)then
-      obj = getObjectFromGUID(example_guid)
-        snapPos = obj.getPosition()
-        cast = getObjectsOnTop(snapPos)
-        print("Rozmiar: " .. #cast)
-        for _,o in pairs(cast) do
-          print(o.hit_object.getName())
+      isValid, cards, error = checkSupplyDecks()
+      if(isValid)then
+        for _,card in pairs(cards) do
+          stackOnTop(card, 9)
         end
+      else
+        print("SupplyDecksError: " .. error)
+      end
     end
 end
 
 function onObjectPickUp( player_color,  picked_up_object)
-
-    -- Bag or Deck returns {{string name, string description, string guid, int index, string lua_script, string lust_script_state}, ...}()
-    -- Zone.getObjects() returns {Object, ...}
-    -- Bag or Deck returns {{string name, string description, string guid, int index, string lua_script, string lust_script_state}, ...}
   print(player_color)
   print(picked_up_object.guid)
-    print(picked_up_object.getName())
-    print("----")
+  print(picked_up_object.getName())
+  print("----")
 end
