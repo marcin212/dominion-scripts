@@ -13,3 +13,45 @@ function checkSupplyDecks()
   end
   return true, result
 end
+
+function setupStartCards()
+  copperStack = getObjectFromGUID(const.game.stacks.treasure.copper)
+  victoryStack = getObjectFromGUID(const.game.stacks.victory.estate)
+  if(not isDeck(copperStack) or not isDeck(victoryStack)) then
+    print("copper or estate stack not found")
+    return
+  end
+  print(copperStack.getObjects()[1].guid)
+  copper = copperStack.getObjectFromGUID(copperStack.getObjects()[1].guid)
+  victory = victoryStack.getObjectFromGUID(victoryStack.getObjects()[1].guid)
+  print(copper)
+  if(not isCard(copper) or not isCard(victory)) then
+    print("copper or estate card not found")
+    return
+  end
+    -- Bag or Deck returns {{string name, string description, string guid, int index, string lua_script, string lust_script_state}, ...}
+ for color, _ in pairs(const.player) do
+   if(Player[color].seated)then
+     for i=1,7 do
+       copper.clone({position = copper.getPosition()}).deal(1, color)
+     end
+     for i=1,3 do
+       victory.clone({position = victory.getPosition()}).deal(1, color)
+     end
+   end
+ end
+end
+
+
+function SetupGame()
+  isValid, cards, error = checkSupplyDecks()
+if(isValid)then
+  for _,card in pairs(cards) do
+    stackOnTop(card, 9)
+  end
+else
+  print("SupplyDecksError: " .. error)
+end
+
+setupStartCards()
+end
