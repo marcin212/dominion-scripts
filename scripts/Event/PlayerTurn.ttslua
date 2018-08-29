@@ -1,4 +1,5 @@
 function onPlayerTurn(color)
+  // TODO
 end
 
 
@@ -14,9 +15,8 @@ function drawCardFromDeck(color)
   end
 end
 
-
-
 function moveCardsToDiscard(color)
+  // TODO
 end
 
 function moveDiscardToDeck(color)
@@ -26,9 +26,9 @@ function moveDiscardToDeck(color)
     print("(" .. color .. ") Discard is empty")
   else
     discard = discard.hit_object
-    deckPos = getObjectFromGUID(const.player[color].deck).getPosition()
-    vector = discard.positionToLocal(deckPos)
+    deckPosition = getObjectFromGUID(const.player[color].deck).getPosition()
     discard.shuffle()
-    discard
+    discard.flip()
+    discard.setPositionSmooth(deckPosition, true, false)
   end
 end

@@ -3,7 +3,6 @@
 #include SetupSupplyDecks
 #include Event/PlayerTurn
 
->>>>>>> Card drawing
 --[[ Lua code. See documentation: http://berserk-games.com/knowledgebase/scripting/ --]]
 
 --[[ The OnLoad function. This is called after everything in the game save finishes loading.
