@@ -1,5 +1,5 @@
 function onPlayerTurn(color)
-  // TODO
+  -- TODO
 end
 
 
@@ -16,7 +16,7 @@ function drawCardFromDeck(color)
 end
 
 function moveCardsToDiscard(color)
-  // TODO
+  -- TODO
 end
 
 function moveDiscardToDeck(color)
