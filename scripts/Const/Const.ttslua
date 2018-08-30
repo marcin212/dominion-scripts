@@ -18,5 +18,43 @@ const = {
             curse = "41ba46"
         },
         trash = "70b9f6",
+        cardsCount = {
+            { -- 1 player
+                treasure = { gold = 30, silver = 40, copper = 60 },
+                victory = { estate = 8, duchie = 8, province = 8 },
+                curse = 10,
+                supply = 10
+            },
+            { -- 2 player
+                treasure = { gold = 30, silver = 40, copper = 60 },
+                victory = { estate = 8, duchie = 8, province = 8 },
+                curse = 10,
+                supply = 10
+            },
+            { -- 3 player
+                treasure = { gold = 30, silver = 40, copper = 60 },
+                victory = { estate = 12, duchie = 12, province = 12 },
+                curse = 20,
+                supply = 10
+            },
+            { -- 4 player
+                treasure = { gold = 30, silver = 40, copper = 60 },
+                victory = { estate = 12, duchie = 12, province = 12 },
+                curse = 30,
+                supply = 10
+            },
+            { -- 5 player
+                treasure = { gold = 60, silver = 80, copper = 120 },
+                victory = { estate = 12, duchie = 12, province = 15 },
+                curse = 40,
+                supply = 10
+            },
+            { -- 6 player
+                treasure = { gold = 60, silver = 80, copper = 120 },
+                victory = { estate = 12, duchie = 12, province = 18 },
+                curse = 50,
+                supply = 10
+            }
+        }
     }
 }
