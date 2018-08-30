@@ -23,3 +23,13 @@ function stackOnTop(object, times)
         object.clone({position = pos})
     end
 end
+
+function getPlayersCount()
+    i = 0
+    for color, _ in pairs(const.player) do
+        if(Player[color].seated)then
+            i = i + 1
+        end
+    end
+    return i
+end

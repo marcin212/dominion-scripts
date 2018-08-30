@@ -14,35 +14,66 @@ function checkSupplyDecks()
     return true, result
 end
 
-function dealStartCards(stack, amount)
+function dealStartCards(card, amount)
     for color, _ in pairs(const.player) do
         if(Player[color].seated)then
             print("deal to " .. color)
-            stack.deal(amount, color)
+            for i = 1, amount do
+                card.clone({position = {0, 10, 0}, callback_function = function(obj) obj.deal(1, color) end})
+            end
         end
     end
 end
 
-function setupStartCards()
-    copperStack = getObjectFromGUID(const.game.stacks.treasure.copper)
-    victoryStack = getObjectFromGUID(const.game.stacks.victory.estate)
-    if(not isDeck(copperStack) or not isDeck(victoryStack)) then
-        print("copper or estate stack not found")
+function setupStartPlayerCards()
+    copperCard = getObjectFromGUID(const.game.stacks.treasure.copper)
+    victoryCard = getObjectFromGUID(const.game.stacks.victory.estate)
+    if(not isCard(copperCard) or not isCard(victoryCard)) then
+        print("copper or estate card not found")
         return
     end
-    copperStack2 = copperStack.clone({position = {0, 10, 0}, callback_function = function(obj) dealStartCards(obj, 7) obj.destruct() end})
-    copperStack2.use_gravity = false
-    victoryStack2 = victoryStack.clone({position = {0, 20, 0}, callback_function = function(obj) dealStartCards(obj, 3) obj.destruct() end})
-    victoryStack2.use_gravity = false
+    dealStartCards(copperCard, 7)
+    dealStartCards(victoryCard, 3)
 end
 
+function spawnCard(guid, amount)
+    card = getObjectFromGUID(guid)
+    cardPos = card.getPosition()
+    for i = 1, amount do
+        card.clone({position = cardPos})
+    end
+end
+
+function setupStartCards()
+    players = getPlayersCount()
+    if(players <= 0 or players > #const.game.cardsCount) then
+        print("Wrong number of players: " .. players)
+        return
+    end
+    cardCount = const.game.cardsCount[players]
+    cardGuid = const.game.stacks
+    spawnCard(cardGuid.curse, cardCount.curse - 1)
+    for k, v in pairs(cardCount.victory) do
+        spawnCard(cardGuid.victory[k], v - 1)
+    end
+    for k, v in pairs(cardCount.treasure) do
+        spawnCard(cardGuid.treasure[k], v - 1)
+    end
+end
 
 function SetupGame()
+    players = getPlayersCount()
+    if(players <= 0 or players > #const.game.cardsCount) then
+        print("Wrong number of players: " .. players)
+        return
+    end
+    cardCount = const.game.cardsCount[players]
     isValid, cards, error = checkSupplyDecks()
     if(isValid)then
+        setupStartPlayerCards()
         setupStartCards()
         for _, card in pairs(cards) do
-            stackOnTop(card, 9)
+            stackOnTop(card, cardCount.supply - 1)
         end
     else
         print("SupplyDecksError: " .. error)
