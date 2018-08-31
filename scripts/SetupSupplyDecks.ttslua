@@ -1,3 +1,5 @@
+
+
 function checkSupplyDecks()
     result = {}
     for i, guid in pairs(const.game.supplies) do
@@ -14,12 +16,20 @@ function checkSupplyDecks()
     return true, result
 end
 
+function cloneCartWithWait(card, color, frames)
+    Wait.time(function()
+        card.clone({position = {0, 10, 0}, callback_function = function(obj) obj.deal(1, color) end})
+    end, frames)
+end
+
 function dealStartCards(card, amount)
+    j = 0
     for color, _ in pairs(const.player) do
         if(Player[color].seated)then
             print("deal to " .. color)
             for i = 1, amount do
-                card.clone({position = {0, 10, 0}, callback_function = function(obj) obj.deal(1, color) end})
+                j = j + 1
+                cloneCartWithWait(card, color, j / 160)
             end
         end
     end
@@ -36,12 +46,28 @@ function setupStartPlayerCards()
     dealStartCards(victoryCard, 3)
 end
 
-function spawnCard(guid, amount)
-    card = getObjectFromGUID(guid)
-    cardPos = card.getPosition()
+
+function spawnCard(guid, amount, startTime)
+    local card = getObjectFromGUID(guid)
+    local a = card.getJSON()
+    local cardPos = card.getPosition()
+    cardPos = {cardPos.x, cardPos.y, cardPos.z}
+    local semafor = amount
+    local cards = {}
+
     for i = 1, amount do
-        card.clone({position = cardPos})
+        cardPos[2] = cardPos[2] + 0.3
+        local newPos = {cardPos[1], cardPos[2], cardPos[3]}
+        Wait.time(function()
+            cardClone = spawnObjectJSON({json = a, position = newPos, callback_function = function() semafor = semafor - 1 end})
+            cardClone.use_gravity = false
+            cards[#cards + 1] = cardClone
+        end, startTime + i * 1 / 20)
     end
+    Wait.condition(function()
+        for i = #cards, 1, - 1 do
+        cards[i].use_gravity = true
+    end end, function() return semafor == 0 end)
 end
 
 function setupStartCards()
@@ -52,12 +78,17 @@ function setupStartCards()
     end
     cardCount = const.game.cardsCount[players]
     cardGuid = const.game.stacks
-    spawnCard(cardGuid.curse, cardCount.curse - 1)
+    multiplier = 1 / 100
+    startTime = 0
+    spawnCard(cardGuid.curse, cardCount.curse - 1, startTime)
+    startTime = (cardCount.curse - 1) * multiplier
     for k, v in pairs(cardCount.victory) do
-        spawnCard(cardGuid.victory[k], v - 1)
+        spawnCard(cardGuid.victory[k], v - 1, startTime)
+        startTime = startTime + ( (v - 1) * multiplier)
     end
     for k, v in pairs(cardCount.treasure) do
-        spawnCard(cardGuid.treasure[k], v - 1)
+        spawnCard(cardGuid.treasure[k], v - 1, startTime)
+        startTime = startTime + ( (v - 1) * multiplier)
     end
 end
 
@@ -69,9 +100,9 @@ function SetupGame()
     end
     cardCount = const.game.cardsCount[players]
     isValid, cards, error = checkSupplyDecks()
+    setupStartPlayerCards()
+    setupStartCards()
     if(isValid)then
-        setupStartPlayerCards()
-        setupStartCards()
         for _, card in pairs(cards) do
             stackOnTop(card, cardCount.supply - 1)
         end
