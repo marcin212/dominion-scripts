@@ -8,6 +8,13 @@ const = {
         Brown = { deck = "00785f", discard = "596d36" }
     },
     game = {
+        removable = {
+            "c81b46", "cca195", "f3cebc",
+            "b8c0a2", "fad175", "556493",
+            "867a29", "74b901", "927f60",
+            "fd14d1", "4983b6", "aa5720",
+            "b76b29", "ef712b", "e3612d"
+        },
         supplies = {
             "dfdf12", "c12ae5", "4cff3a", "118b86", "f31543",
             "c3933e", "fedc5f", "a70692", "6481ea", "af6c9d"
