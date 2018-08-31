@@ -49,6 +49,14 @@ function onPlayerChangedColor(color)
     --[[ print('Player changed color! ' .. color .. ' ' .. colorToPlayerName(color)) --]]
 end
 
+function onPlayerTurn(player_color)
+    TurnSteps.onPlayerTurn(player_color)
+end
+
+function onObjectPickUp( player_color, picked_up_object)
+    TurnSteps.onObjectPickUp( player_color, picked_up_object)
+end
+
 function onStartGame()
     print("start game")
     return SetupGame()
