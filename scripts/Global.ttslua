@@ -1,7 +1,7 @@
 #include Utils
 #include Const\Const
 #include TaskManager
-#include SetupSupplyDecks
+#include SetupGame
 #include Event\PlayerTurn
 
 --[[ Lua code. See documentation: http://berserk-games.com/knowledgebase/scripting/ --]]
@@ -50,7 +50,7 @@ end
 
 function onStartGame()
     print("start game")
-    return true
+    return SetupGame()
 end
 
 function onScriptingButtonUp(index, color)
