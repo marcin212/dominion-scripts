@@ -25,11 +25,15 @@ function stackOnTop(object, times)
 end
 
 function getPlayersCount()
-    i = 0
-    for color, _ in pairs(const.player) do
+    return #getSeatedPlayers()
+end
+
+function getSeatedPlayers()
+    local players = {}
+    for color, v in pairs(const.player) do
         if(Player[color].seated)then
-            i = i + 1
+            players[#players+1] = Player[color];
         end
     end
-    return i
+    return players
 end

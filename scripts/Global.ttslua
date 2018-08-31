@@ -5,30 +5,11 @@
 #include Event\PlayerTurn
 #include TurnSteps
 
-function startGame(obj, player_clicker_color, alt_click)
-    if(Player[player_clicker_color].admin and onStartGame)then
-        if(onStartGame()) then
-            obj.clearButtons()
-        end
-    end
-end
+
 
 function onLoad()
     trash = getObjectFromGUID(const.game.trash)
-    params = {
-        click_function = "startGame",
-        function_owner = self,
-        label = "Start Game",
-        position = { - 1.7, - 0.2, 0},
-        rotation = {0, 90, 0},
-        width = 2000,
-        height = 400,
-        font_size = 340,
-        color = {0.5, 0.5, 0.5},
-        font_color = {1, 1, 1},
-        tooltip = "This text appears on mouseover.",
-    }
-    trash.createButton(params)
+    trash.createButton(StartGameButton.params)
     TaskManager.addWorker(DealStartCardWorker, "DealStartCardWorker", 1 / 20)
     TaskManager.addWorker(DuplicateCardWorker, "DuplicateCardWorker", 1 / 30)
     TaskManager.addWorker(DiscardHandWorker, "DiscardHandWorker", 1 / 20)

@@ -1,0 +1,26 @@
+DrawCardButton.params = {
+    click_function = "DrawCardButton.onClick",
+    function_owner = self,
+    label = "Draw",
+    position = { - 1.7, - 0.2, 0},
+    rotation = {0, 90, 0},
+    width = 1200,
+    height = 600,
+    font_size = 340,
+    color = {0.5, 0.5, 0.5},
+    font_color = {1, 1, 1},
+    tooltip = "Draw one hand from deck to your hand",
+}
+
+function DrawCardButton.onClick(obj, player_clicker_color, alt_click)
+  local color = DrawCardButton.getPlayerColorByDeckFieldGuid(obj.getGUID())
+  drawCardFromDeck(color)
+end
+
+function DrawCardButton.getPlayerColorByDeckFieldGuid(guid)
+  for color,value in pairs(const.player) do
+    if value.deck == guid then
+      return color;
+    end
+  end
+end
