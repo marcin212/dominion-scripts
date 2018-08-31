@@ -17,10 +17,6 @@ function drawCardFromDeck(color)
     end
 end
 
-function moveCardsToDiscard(color)
-    -- TODO
-end
-
 function moveDiscardToDeck(color)
     discardPos = getObjectFromGUID(const.player[color].discard).getPosition()
     discard = getObjectsOnTop(discardPos)[1]
@@ -33,4 +29,12 @@ function moveDiscardToDeck(color)
         discard.flip()
         discard.setPositionSmooth(deckPosition, true, false)
     end
+end
+
+function discardHand(color)
+  local handObj = Player[color].getHandObjects();
+  local discardPos = getObjectFromGUID(const.player[color].discard).getPosition()
+  for k,obj in handObj do
+    obj.setPositionSmooth(discardPos, true, false)
+  end
 end
