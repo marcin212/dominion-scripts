@@ -1,0 +1,30 @@
+StartGameButton.params = {
+    click_function = "StartGameButton.onClick",
+    function_owner = self,
+    label = "Start Game",
+    position = { 2.0, 0, 0},
+    rotation = {0, 90, 0},
+    width = 2000,
+    height = 400,
+    font_size = 340,
+    color = {0.5, 0.5, 0.5},
+    font_color = {1, 1, 1},
+    tooltip = "This text appears on mouseover.",
+}
+
+function StartGameButton.onClick(obj, player_clicker_color, alt_click)
+    if(Player[player_clicker_color].admin and onStartGame)then
+        if(onStartGame()) then
+            obj.clearButtons()
+            StartGameButton.setupOtherButtons()
+        end
+    end
+end
+
+function StartGameButton.setupOtherButtons()
+    local players = getSeatedPlayers();
+    for k,v in pairs(players) do
+      local deckField = getObjectFromGUID(const.player[v.color].deck)
+      deckField.createButton(DrawCardButton.params)
+    end
+end
