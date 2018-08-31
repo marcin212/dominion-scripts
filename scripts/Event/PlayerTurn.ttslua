@@ -1,7 +1,9 @@
---function onPlayerTurn(color)
--- TODO
---end
-
+function fillHandFromDeck(color, number)
+  local number = number or 5
+  for i=1, number do
+    drawCardFromDeck(color)
+  end
+end
 
 function drawCardFromDeck(color)
     deckPos = getObjectFromGUID(const.player[color].deck).getPosition()
