@@ -87,6 +87,15 @@ function setupSupplyCards(amount)
     end
 end
 
+function cleanTable()
+    for k, v in pairs(const.game.removable) do
+        obj = getObjectFromGUID(v)
+        if(obj) then
+            obj.destruct()
+        end
+    end
+end
+
 function SetupGame()
     players = getPlayersCount()
     if(players <= 0 or players > #const.game.cardsCount) then
@@ -96,6 +105,7 @@ function SetupGame()
     cardCount = const.game.cardsCount[players]
     isValid, cards, error = checkSupplyDecks()
     if(isValid)then
+        cleanTable()
         setupStartPlayerCards()
         setupStartCards()
         setupSupplyCards(cardCount.supply)
