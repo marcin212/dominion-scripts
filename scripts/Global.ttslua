@@ -4,7 +4,8 @@
 #include SetupGame
 #include Event\PlayerTurn
 #include TurnSteps
-
+#include Buttons\StartGameButton
+#include Buttons\DrawCardButton
 
 
 function onLoad()

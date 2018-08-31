@@ -1,8 +1,9 @@
+StartGameButton = {}
 StartGameButton.params = {
-    click_function = "StartGameButton.onClick",
+    click_function = "StartGameButton_onClick",
     function_owner = self,
     label = "Start Game",
-    position = { 2.0, 0, 0},
+    position = { - 1.7, - 0.2, 0},
     rotation = {0, 90, 0},
     width = 2000,
     height = 400,
@@ -12,7 +13,7 @@ StartGameButton.params = {
     tooltip = "This text appears on mouseover.",
 }
 
-function StartGameButton.onClick(obj, player_clicker_color, alt_click)
+function StartGameButton_onClick(obj, player_clicker_color, alt_click)
     if(Player[player_clicker_color].admin and onStartGame)then
         if(onStartGame()) then
             obj.clearButtons()
@@ -23,8 +24,8 @@ end
 
 function StartGameButton.setupOtherButtons()
     local players = getSeatedPlayers();
-    for k,v in pairs(players) do
-      local deckField = getObjectFromGUID(const.player[v.color].deck)
-      deckField.createButton(DrawCardButton.params)
+    for k, v in pairs(players) do
+        local deckField = getObjectFromGUID(const.player[v.color].deck)
+        deckField.createButton(DrawCardButton.params)
     end
 end
