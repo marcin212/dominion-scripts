@@ -16,20 +16,22 @@ function checkSupplyDecks()
     return true, result
 end
 
-function cloneCartWithWait(card, color, frames)
-    Wait.time(function()
-        card.clone({position = {0, 10, 0}, callback_function = function(obj) obj.deal(1, color) end})
-    end, frames)
+
+--needs parameters:
+-- card
+-- color
+function DealStartCardWorker(data)
+    data.card.clone({position = {0, 10, 0}, callback_function = function(obj) obj.deal(1, data.color) end})
 end
 
+
 function dealStartCards(card, amount)
-    j = 0
     for color, _ in pairs(const.player) do
         if(Player[color].seated)then
             print("deal to " .. color)
             for i = 1, amount do
-                j = j + 1
-                cloneCartWithWait(card, color, j / 160)
+                local data = {card = card, color = color}
+                TaskManager.addTask(data, "DealStartCardWorker")
             end
         end
     end
@@ -47,27 +49,21 @@ function setupStartPlayerCards()
 end
 
 
-function spawnCard(guid, amount, startTime)
+function DuplicateCardWorker(data)
+    spawnObjectJSON({json = data.json, position = data.position})
+end
+
+function spawnCard(guid, amount)
     local card = getObjectFromGUID(guid)
-    local a = card.getJSON()
+    local cardJSON = card.getJSON()
     local cardPos = card.getPosition()
     cardPos = {cardPos.x, cardPos.y, cardPos.z}
-    local semafor = amount
-    local cards = {}
-
     for i = 1, amount do
         cardPos[2] = cardPos[2] + 0.3
         local newPos = {cardPos[1], cardPos[2], cardPos[3]}
-        Wait.time(function()
-            cardClone = spawnObjectJSON({json = a, position = newPos, callback_function = function() semafor = semafor - 1 end})
-            cardClone.use_gravity = false
-            cards[#cards + 1] = cardClone
-        end, startTime + i * 1 / 20)
+        local data = {position = newPos, json = cardJSON}
+        TaskManager.addTask(data, "DuplicateCardWorker")
     end
-    Wait.condition(function()
-        for i = #cards, 1, - 1 do
-        cards[i].use_gravity = true
-    end end, function() return semafor == 0 end)
 end
 
 function setupStartCards()
@@ -78,17 +74,18 @@ function setupStartCards()
     end
     cardCount = const.game.cardsCount[players]
     cardGuid = const.game.stacks
-    multiplier = 1 / 100
-    startTime = 0
-    spawnCard(cardGuid.curse, cardCount.curse - 1, startTime)
-    startTime = (cardCount.curse - 1) * multiplier
+    spawnCard(cardGuid.curse, cardCount.curse - 1)
     for k, v in pairs(cardCount.victory) do
-        spawnCard(cardGuid.victory[k], v - 1, startTime)
-        startTime = startTime + ( (v - 1) * multiplier)
+        spawnCard(cardGuid.victory[k], v - 1)
     end
     for k, v in pairs(cardCount.treasure) do
-        spawnCard(cardGuid.treasure[k], v - 1, startTime)
-        startTime = startTime + ( (v - 1) * multiplier)
+        spawnCard(cardGuid.treasure[k], v - 1)
+    end
+end
+
+function setupSupplyCards(amount)
+    for _, card in pairs(cards) do
+        spawnCard(card.getGUID(), amount - 1)
     end
 end
 
@@ -100,12 +97,10 @@ function SetupGame()
     end
     cardCount = const.game.cardsCount[players]
     isValid, cards, error = checkSupplyDecks()
-    setupStartPlayerCards()
-    setupStartCards()
     if(isValid)then
-        for _, card in pairs(cards) do
-            stackOnTop(card, cardCount.supply - 1)
-        end
+        setupStartPlayerCards()
+        setupStartCards()
+        setupSupplyCards(cardCount.supply)
     else
         print("SupplyDecksError: " .. error)
     end

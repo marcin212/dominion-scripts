@@ -1,5 +1,6 @@
 #include Utils
 #include Const\Const
+#include TaskManager
 #include SetupSupplyDecks
 #include Event\PlayerTurn
 
@@ -32,6 +33,9 @@ function onLoad()
         tooltip = "This text appears on mouseover.",
     }
     trash.createButton(params)
+    TaskManager.addWorker(DealStartCardWorker, "DealStartCardWorker", 1 / 20)
+    TaskManager.addWorker(DuplicateCardWorker, "DuplicateCardWorker", 1 / 20)
+
 end
 
 --[[ The Update function. This is called once per frame. --]]
