@@ -12,6 +12,9 @@ const = {
             "dfdf12", "c12ae5", "4cff3a", "118b86", "f31543",
             "c3933e", "fedc5f", "a70692", "6481ea", "af6c9d"
         },
+        supplies_upper = {
+            "93bb4d", "95999c", "8bec2c", "0f1517", "66311a", "221f1d", "89a4b8"
+        },
         stacks = {
             treasure = { gold = "888bc2", silver = "575363", copper = "b8626d" },
             victory = { estate = "674dc4", duchie = "a0e0fe", province = "d932e1" },
