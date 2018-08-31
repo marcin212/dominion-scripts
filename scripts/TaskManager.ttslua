@@ -1,0 +1,56 @@
+TaskManager = {}
+TaskManager.Workers = {}
+TaskManager.Queue = {
+    First = 0,
+    Last = -1,
+    List = {},
+    Add = function(value)
+        local last = TaskManager.Queue.Last + 1
+        TaskManager.Queue.Last = last
+        TaskManager.Queue.List[last] = value
+    end,
+    Remove = function()
+        local first = TaskManager.Queue.First
+        if first > TaskManager.Queue.Last then error("list is empty") end
+        local value = TaskManager.Queue.List[first]
+        TaskManager.Queue.List[first] = nil -- to allow garbage collection
+        TaskManager.Queue.First = first + 1
+        return value
+    end,
+    Get = function()
+        return TaskManager.Queue.List[TaskManager.Queue.First]
+    end
+}
+
+-- Add new data to process
+-- data is your table for worker
+-- type is worker type which will process the data
+-- returns true if the task has been added. False otherwise.
+function TaskManager.addTask(data, type)
+    if(TaskManager.Workers[type]) then
+        TaskManager.Queue.Add({data = data, type = type})
+        return true
+    else
+        return false, "Worker of type \"" .. type .."\" doesn't exists."
+    end
+end
+
+-- Add new worker
+-- func is your main function of worker
+-- type is worker unique type
+-- time is worker polling time for task in seconds
+function TaskManager.addWorker(func, type, time)
+    if(TaskManager.Workers[type]) then
+        return false, "Worker of type \"" .. type .."\" exists"
+    else
+        TaskManager.Workers[type] = Wait.time(function()
+            local task = TaskManager.Queue.Get()
+            if(task ~= nil and task.type == type) then
+                if(not func(task.data)) then
+                    TaskManager.Queue.Remove()
+                end
+            end
+        end, time, - 1)
+        return true
+    end
+end
