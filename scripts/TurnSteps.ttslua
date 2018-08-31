@@ -1,0 +1,52 @@
+
+player_state = {}
+turnColor = nil
+
+function isOnDeck(guid)
+    for _, v in pairs(const.game.supplies) do
+        result = getObjectsOnTop(getObjectFromGUID(v).getPosition())[1]
+        if(result) then
+            if(result.hit_object.getGUID() == guid) then
+                return true
+            end
+        end
+    end
+
+    for _, v in pairs(const.game.supplies_upper) do
+        result = getObjectsOnTop(getObjectFromGUID(v).getPosition())[1]
+        if(result) then
+            if(result.hit_object.getGUID() == guid) then
+                return true
+            end
+        end
+    end
+
+    return false
+end
+
+function onTurnEnd(color)
+    if(color == nil) then return end
+    for guid, obj in pairs(player_state[color]) do
+        if(obj ~= nil and not isOnDeck(guid)) then
+            obj.deal(1, color)
+        end
+    end
+end
+
+function onPlayerTurn( player_color)
+    onTurnEnd(turnColor)
+    turnColor = player_color.color
+    if(turnColor ~= nil) then
+        player_state[turnColor] = {}
+    end
+end
+
+function onDrop( player_color)
+    print("drop")
+end
+
+function onObjectPickUp( player_color, picked_up_object)
+    if(player_color == turnColor)then
+        player_state[turnColor][picked_up_object.getGUID()] = picked_up_object
+    end
+end

@@ -3,6 +3,7 @@
 #include TaskManager
 #include SetupGame
 #include Event\PlayerTurn
+#include TurnSteps
 
 --[[ Lua code. See documentation: http://berserk-games.com/knowledgebase/scripting/ --]]
 
@@ -57,15 +58,15 @@ function onScriptingButtonUp(index, color)
     if(index == 1)then
         drawCardFromDeck(color)
     elseif index == 2 then
-        SetupGame()
+
     elseif index == 3 then
 
     end
 end
 
-function onObjectPickUp( player_color, picked_up_object)
-    print(player_color)
-    print(picked_up_object.guid)
-    print(picked_up_object.getName())
-    print("----")
-end
+-- function onObjectPickUp( player_color, picked_up_object)
+--     print(player_color)
+--     print(picked_up_object.guid)
+--     print(picked_up_object.getName())
+--     print("----")
+-- end

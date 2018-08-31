@@ -1,6 +1,6 @@
-function onPlayerTurn(color)
-    -- TODO
-end
+--function onPlayerTurn(color)
+-- TODO
+--end
 
 
 function drawCardFromDeck(color)
