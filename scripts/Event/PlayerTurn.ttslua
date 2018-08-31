@@ -1,8 +1,8 @@
 function fillHandFromDeck(color, number)
-  local number = number or 5
-  for i=1, number do
-    drawCardFromDeck(color)
-  end
+    local number = number or 5
+    for i = 1, number do
+        drawCardFromDeck(color)
+    end
 end
 
 function drawCardFromDeck(color)
@@ -10,7 +10,6 @@ function drawCardFromDeck(color)
     deck = getObjectsOnTop(deckPos)[1]
     if(deck == nil)then
         print("(" .. color .. ") Deck is empty")
-        moveCardsToDiscard(color)
         moveDiscardToDeck(color)
     else
         deck.hit_object.deal(1, color)
@@ -31,10 +30,14 @@ function moveDiscardToDeck(color)
     end
 end
 
+function ObjectPlacerWorker(data)
+    data.obj.setPosition(data.pos, true)
+end
+
 function discardHand(color)
-  local handObj = Player[color].getHandObjects();
-  local discardPos = getObjectFromGUID(const.player[color].discard).getPosition()
-  for k,obj in handObj do
-    obj.setPositionSmooth(discardPos, true, false)
-  end
+    local handObj = Player[color].getHandObjects();
+    local discardPos = getObjectFromGUID(const.player[color].discard).getPosition()
+    for k, obj in pairs(handObj) do
+        TaskManager.addTask({pos = {discardPos.x, discardPos.y + k + 1, discardPos.z}, obj = obj}, "ObjectPlacerWorker")
+    end
 end

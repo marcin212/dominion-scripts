@@ -19,7 +19,7 @@ end
 -- card
 -- color
 function DealStartCardWorker(data)
-    data.card.clone({position = {0, 10, 0}, callback_function = function(obj) obj.deal(1, data.color) end})
+    data.card.clone({position = {0, 10, 0}, callback_function = function(obj) obj.deal(1, data.color) data.semafor.locks = data.semafor.locks - 1 end})
 end
 
 
@@ -27,10 +27,12 @@ function dealStartCards(card, amount)
     for color, _ in pairs(const.player) do
         if(Player[color].seated)then
             print("deal to " .. color)
+            local semafor = {locks = amount}
             for i = 1, amount do
-                local data = {card = card, color = color}
+                local data = {card = card, color = color, semafor = semafor}
                 TaskManager.addTask(data, "DealStartCardWorker")
             end
+            TaskManager.addTask({semafor = semafor}, "WaitWorker")
         end
     end
 end
@@ -96,6 +98,19 @@ function cleanTable()
     end
 end
 
+function DiscardHandWorker(data)
+    discardHand(data.color)
+end
+
+function discardSetup()
+    for color, _ in pairs(const.player) do
+        if(Player[color].seated)then
+            TaskManager.addTask({color = color}, "DiscardHandWorker")
+            --fillHandFromDeck(color)
+        end
+    end
+end
+
 function SetupGame()
     players = getPlayersCount()
     if(players <= 0 or players > #const.game.cardsCount) then
@@ -104,11 +119,13 @@ function SetupGame()
     end
     cardCount = const.game.cardsCount[players]
     isValid, cards, error = checkSupplyDecks()
+    isValid = true
     if(isValid)then
-        cleanTable()
+        --cleanTable()
         setupStartPlayerCards()
-        setupStartCards()
-        setupSupplyCards(cardCount.supply)
+        --setupStartCards()
+        --setupSupplyCards(cardCount.supply)
+        discardSetup()
         return true
     else
         print("SupplyDecksError: " .. error)

@@ -9,6 +9,11 @@ TaskManager.Queue = {
         TaskManager.Queue.Last = last
         TaskManager.Queue.List[last] = value
     end,
+    AddFirst = function()
+        local first = TaskManager.Queue.First - 1
+        TaskManager.Queue.First = first
+        TaskManager.Queue.List[first] = data
+    end,
     Remove = function()
         local first = TaskManager.Queue.First
         if first > TaskManager.Queue.Last then error("list is empty") end
@@ -35,6 +40,16 @@ function TaskManager.addTask(data, type)
     end
 end
 
+
+function TaskManager.AddForceTask (data, type)
+    if(TaskManager.Workers[type]) then
+        TaskManager.Queue.AddFirst({data = data, type = type})
+        return true
+    else
+        return false, "Worker of type \"" .. type .."\" doesn't exists."
+    end
+end
+
 -- Add new worker
 -- func is your main function of worker
 -- type is worker unique type
@@ -53,4 +68,9 @@ function TaskManager.addWorker(func, type, time)
         end, time, - 1)
         return true
     end
+end
+
+
+function WaitWorker(data)
+    return data.semafor.locks ~= 0
 end

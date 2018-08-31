@@ -42,6 +42,8 @@ function TurnSteps.onTurnEnd(color)
             obj.deal(1, color)
         end
     end
+    discardHand(color)
+    fillHandFromDeck(color)
 end
 
 function TurnSteps.onPlayerTurn( player_color)

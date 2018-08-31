@@ -31,7 +31,9 @@ function onLoad()
     trash.createButton(params)
     TaskManager.addWorker(DealStartCardWorker, "DealStartCardWorker", 1 / 20)
     TaskManager.addWorker(DuplicateCardWorker, "DuplicateCardWorker", 1 / 30)
-
+    TaskManager.addWorker(DiscardHandWorker, "DiscardHandWorker", 1 / 20)
+    TaskManager.addWorker(ObjectPlacerWorker, "ObjectPlacerWorker", 1 / 20)
+    TaskManager.addWorker(WaitWorker, "WaitWorker", 1 / 5)
 end
 
 function onPlayerTurn(color)
