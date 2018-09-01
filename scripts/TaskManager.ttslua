@@ -58,5 +58,5 @@ end
 
 
 function WaitWorker(data)
-    return data.semafor.locks ~= 0
+    return not data.semafor:isReleased()
 end

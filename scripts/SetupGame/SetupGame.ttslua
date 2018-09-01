@@ -1,3 +1,4 @@
+#include Workers
 function checkSupplyDecks()
     result = {}
     for i, guid in pairs(const.game.supplies) do
@@ -14,36 +15,12 @@ function checkSupplyDecks()
     return true, result
 end
 
-function WaitForCardWorker(data)
-    local handObj = Player[data.color].getHandObjects();
-    for k, obj in pairs(handObj) do
-        if(obj.getGUID() == data.guid)then
-            return false
-        end
-    end
-    return true
-end
-
---needs parameters:
--- card
--- color
-function DealStartCardWorker(data)
-    data.card.clone({position = {0, 10, 0}, callback_function = 
-        function(obj)
-        obj.deal(1, data.color)
-        Wait.condition(function() data.semafor.locks = data.semafor.locks - 1 end, function() return not WaitForCardWorker({color = data.color, guid = obj.getGUID()}) end)
-        --TaskManager.AddForceTask({color = data.color, guid = obj.getGUID()}, "WaitForCardWorker")
-        --data.semafor.locks = data.semafor.locks - 1
-    end})
-
-end
-
-
 function dealStartCards(card, amount)
     for color, _ in pairs(const.player) do
         if(Player[color].seated)then
             print("deal to " .. color)
-            local semafor = {locks = amount}
+            local semafor = Semafor.new()
+            semafor:P(amount)
             for i = 1, amount do
                 local data = {card = card, color = color, semafor = semafor}
                 TaskManager.addTask(data, "DealStartCardWorker")
@@ -62,11 +39,6 @@ function setupStartPlayerCards()
     end
     dealStartCards(copperCard, 7)
     dealStartCards(victoryCard, 3)
-end
-
-
-function DuplicateCardWorker(data)
-    spawnObjectJSON({json = data.json, position = data.position})
 end
 
 function spawnCard(guid, amount)
@@ -112,10 +84,6 @@ function cleanTable()
             obj.destruct()
         end
     end
-end
-
-function DiscardHandWorker(data)
-    discardHand(data.color)
 end
 
 function discardSetup()

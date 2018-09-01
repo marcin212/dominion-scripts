@@ -1,0 +1,29 @@
+Semafor = {}
+
+function Semafor.__index(table, key)
+    return Semafor[key]
+end
+
+function Semafor:P(amount)
+    local amount = amount or 1
+    self.locks = self.locks + amount
+end
+
+function Semafor:V(amount)
+    local amount = amount or 1
+    if(self.locks >= amount) then
+        self.locks = self.locks - amount
+        return true
+    end
+    return false
+end
+
+function Semafor:isReleased()
+    return self.locks == 0
+end
+
+function Semafor.new()
+    local semafor = {locks = 0}
+    setmetatable(semafor, Semafor)
+    return semafor
+end

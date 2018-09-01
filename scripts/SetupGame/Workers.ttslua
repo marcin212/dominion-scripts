@@ -1,0 +1,31 @@
+
+function WaitForCardCondition(data)
+    return function()
+        local handObj = Player[data.color].getHandObjects();
+        for k, obj in pairs(handObj) do
+            if(obj.getGUID() == data.guid)then
+                return true
+            end
+        end
+        return false
+    end
+end
+
+--needs parameters:
+-- card
+-- color
+function DealStartCardWorker(data)
+    data.card.clone({position = {0, 10, 0}, callback_function = 
+        function(obj)
+        obj.deal(1, data.color)
+        Wait.condition(function() data.semafor:V() end, WaitForCardCondition({color = data.color, guid = obj.getGUID()}))
+    end})
+end
+
+function DuplicateCardWorker(data)
+    spawnObjectJSON({json = data.json, position = data.position})
+end
+
+function DiscardHandWorker(data)
+    discardHand(data.color)
+end
