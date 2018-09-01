@@ -13,9 +13,7 @@
 function onLoad()
     trash = getObjectFromGUID(const.game.trash)
     trash.createButton(StartGameButton.params)
-    TaskManager.addWorker(DealStartCardWorker, "DealStartCardWorker", 1 / 20)
-    TaskManager.addWorker(DuplicateCardWorker, "DuplicateCardWorker", 1 / 30)
-    TaskManager.addWorker(DiscardHandWorker, "DiscardHandWorker", 1 / 20)
+    SetupGame.onLoad()
     TaskManager.addWorker(ObjectPlacerWorker, "ObjectPlacerWorker", 1 / 20)
     TaskManager.addWorker(WaitWorker, "WaitWorker", 1 / 5)
     TaskManager.addWorker(WaitForCardWorker, "WaitForCardWorker", 1 / 5)
@@ -42,7 +40,7 @@ end
 
 function onStartGame()
     print("start game")
-    return SetupGame()
+    return SetupGame.SetupGame()
 end
 
 

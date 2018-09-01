@@ -1,21 +1,25 @@
-#include Workers
-function checkSupplyDecks()
-    result = {}
+#include SetupGameWorkers
+
+SetupGame = {}
+
+
+function SetupGame.checkSupplyDecks()
+    local result = {}
     for i, guid in pairs(const.game.supplies) do
-        deck_board = getObjectFromGUID(guid)
+        local deck_board = getObjectFromGUID(guid)
         if deck_board == nil then
             return false, result, "Missing GUID:" .. guid
         end
         objectsOnTop = getObjectsOnTop(deck_board.getPosition())
         if(#objectsOnTop ~= 1)then return false, result, "Missing or wrong card on deck board:" .. i end
-        card = objectsOnTop[1].hit_object
+        local card = objectsOnTop[1].hit_object
         if(not isCard(card)) then return false, result, "Missing or wrong card on deck:" .. i end
         result[#result + 1] = card
     end
     return true, result
 end
 
-function dealStartCards(card, amount)
+function SetupGame.dealStartCards(card, amount)
     for color, _ in pairs(const.player) do
         if(Player[color].seated)then
             print("deal to " .. color)
@@ -30,18 +34,18 @@ function dealStartCards(card, amount)
     end
 end
 
-function setupStartPlayerCards()
-    copperCard = getObjectFromGUID(const.game.stacks.treasure.copper)
-    victoryCard = getObjectFromGUID(const.game.stacks.victory.estate)
+function SetupGame.setupStartPlayerCards()
+    local copperCard = getObjectFromGUID(const.game.stacks.treasure.copper)
+    local victoryCard = getObjectFromGUID(const.game.stacks.victory.estate)
     if(not isCard(copperCard) or not isCard(victoryCard)) then
         print("copper or estate card not found")
         return
     end
-    dealStartCards(copperCard, 7)
-    dealStartCards(victoryCard, 3)
+    SetupGame.dealStartCards(copperCard, 7)
+    SetupGame.dealStartCards(victoryCard, 3)
 end
 
-function spawnCard(guid, amount)
+function SetupGame.spawnCard(guid, amount)
     local card = getObjectFromGUID(guid)
     local cardJSON = card.getJSON()
     local cardPos = card.getPosition()
@@ -54,39 +58,39 @@ function spawnCard(guid, amount)
     end
 end
 
-function setupStartCards()
-    players = getPlayersCount()
+function SetupGame.setupStartCards()
+    local players = getPlayersCount()
     if(players <= 0 or players > #const.game.cardsCount) then
         print("Wrong number of players: " .. players)
         return
     end
-    cardCount = const.game.cardsCount[players]
-    cardGuid = const.game.stacks
-    spawnCard(cardGuid.curse, cardCount.curse - 1)
+    local cardCount = const.game.cardsCount[players]
+    local cardGuid = const.game.stacks
+    SetupGame.spawnCard(cardGuid.curse, cardCount.curse - 1)
     for k, v in pairs(cardCount.victory) do
-        spawnCard(cardGuid.victory[k], v - 1)
+        SetupGame.spawnCard(cardGuid.victory[k], v - 1)
     end
     for k, v in pairs(cardCount.treasure) do
-        spawnCard(cardGuid.treasure[k], v - 1)
+        SetupGame.spawnCard(cardGuid.treasure[k], v - 1)
     end
 end
 
-function setupSupplyCards(amount)
+function SetupGame.setupSupplyCards(amount, cards)
     for _, card in pairs(cards) do
-        spawnCard(card.getGUID(), amount - 1)
+        SetupGame.spawnCard(card.getGUID(), amount - 1)
     end
 end
 
-function cleanTable()
+function SetupGame.cleanTable()
     for k, v in pairs(const.game.removable) do
-        obj = getObjectFromGUID(v)
+        local obj = getObjectFromGUID(v)
         if(obj) then
             obj.destruct()
         end
     end
 end
 
-function discardSetup()
+function SetupGame.discardSetup()
     for color, _ in pairs(const.player) do
         if(Player[color].seated)then
             TaskManager.addTask({color = color}, "DiscardHandWorker")
@@ -95,24 +99,30 @@ function discardSetup()
     end
 end
 
-function SetupGame()
-    players = getPlayersCount()
+function SetupGame.SetupGame()
+    local players = getPlayersCount()
     if(players <= 0 or players > #const.game.cardsCount) then
         print("Wrong number of players: " .. players)
         return
     end
-    cardCount = const.game.cardsCount[players]
-    isValid, cards, error = checkSupplyDecks()
+    local cardCount = const.game.cardsCount[players]
+    local isValid, cards, error = SetupGame.checkSupplyDecks()
     isValid = true
     if(isValid)then
-        --cleanTable()
-        setupStartPlayerCards()
-        --setupStartCards()
-        --setupSupplyCards(cardCount.supply)
-        discardSetup()
+        SetupGame.cleanTable()
+        SetupGame.setupStartPlayerCards()
+        SetupGame.setupStartCards()
+        SetupGame.setupSupplyCards(cardCount.supply, cards)
+        SetupGame.discardSetup()
         return true
     else
         print("SupplyDecksError: " .. error)
         return false
     end
+end
+
+function SetupGame.onLoad()
+    TaskManager.addWorker(SetupGameWorkers.DealStartCardWorker, "DealStartCardWorker", 1 / 20)
+    TaskManager.addWorker(SetupGameWorkers.DuplicateCardWorker, "DuplicateCardWorker", 1 / 30)
+    TaskManager.addWorker(SetupGameWorkers.DiscardHandWorker, "DiscardHandWorker", 1 / 20)
 end
