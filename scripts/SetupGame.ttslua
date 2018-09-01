@@ -31,8 +31,9 @@ function DealStartCardWorker(data)
     data.card.clone({position = {0, 10, 0}, callback_function = 
         function(obj)
         obj.deal(1, data.color)
-        TaskManager.AddForceTask({color = data.color, guid = obj.getGUID()}, "WaitForCardWorker")
-        data.semafor.locks = data.semafor.locks - 1
+        Wait.condition(function() data.semafor.locks = data.semafor.locks - 1 end, function() return not WaitForCardWorker({color = data.color, guid = obj.getGUID()}) end)
+        --TaskManager.AddForceTask({color = data.color, guid = obj.getGUID()}, "WaitForCardWorker")
+        --data.semafor.locks = data.semafor.locks - 1
     end})
 
 end
