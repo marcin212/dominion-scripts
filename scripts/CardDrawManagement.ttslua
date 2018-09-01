@@ -1,0 +1,66 @@
+function fillHandFromDeck(color, number)
+    local number = number or 5
+    for i = 1, number do
+        TaskManager.addTask({color = color}, "DrawCardFromDeckWorker")
+    end
+end
+
+function ObjectPlacerWorker(data)
+    data.obj.setPosition(data.pos, true)
+end
+
+function discardHand(color)
+    local handObj = Player[color].getHandObjects();
+    local discardPos = getDiscardPosition(color)
+    for k, obj in pairs(handObj) do
+        TaskManager.addTask({pos = {discardPos.x, discardPos.y + k + 1, discardPos.z}, obj = obj}, "ObjectPlacerWorker")
+    end
+end
+
+function DrawCardFromDeckWorker(data)
+  local color = data.color
+  local deck = getDeckObject(color)
+  local discard = getDiscardObject(color)
+
+  if(deck == nil and discard == nil)then
+    print("(" .. color .. ") No more cards available")
+    return false
+  end
+  if(deck == nil)then
+      print("(" .. color .. ") Deck is empty")
+      local semafor = {locks = 1}
+      local data = {color = color, semafor = semafor}
+      TaskManager.addTask(data, "DiscardToDeckWorker")
+      TaskManager.addTask({semafor = semafor}, "WaitWorker")
+  end
+  TaskManager.addTask({color = color}, "DrawCardForPlayerWorker")
+end
+
+function DiscardToDeckWorker(data)
+  local color = data.color
+  local discard = getDiscardObject(color)
+  if(discard == nil)then
+      print("(" .. color .. ") Discard is empty")
+  else
+      print("(" .. color .. ") Discard is not empty, transforming...")
+      discard.shuffle()
+      discard.flip()
+      discard.setPositionSmooth(getDeckPosition(color), true, false)
+      Wait.condition(function() data.semafor.locks = data.semafor.locks - 1 end, function() return not WaitForCardsAtDeckWorker({color = color}) end)
+  end
+end
+
+function DrawCardForPlayerWorker(data)
+  local deck = getDeckObject(data.color)
+  if(deck ~= nil) then
+    deck.deal(1, data.color)
+  end
+end
+
+function WaitForCardsAtDeckWorker(data)
+  local deck = getDeckObject(data.color)
+  if(deck ~= nil)then
+    return false
+  end
+  return true
+end

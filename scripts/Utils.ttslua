@@ -9,6 +9,30 @@ function getObjectsOnTop(objectPos)
     })
 end
 
+function getDeckObject(color)
+  local obj = getObjectsOnTop(getDeckPosition(color))[1]
+  if(obj ~= nil) then
+    return obj.hit_object
+  end
+  return nil
+end
+
+function getDiscardObject(color)
+  local obj = getObjectsOnTop(getDiscardPosition(color))[1]
+  if(obj ~= nil) then
+    return obj.hit_object
+  end
+  return nil
+end
+
+function getDeckPosition(color)
+    return getObjectFromGUID(const.player[color].deck).getPosition()
+end
+
+function getDiscardPosition(color)
+    return getObjectFromGUID(const.player[color].discard).getPosition()
+end
+
 function isCard(object)
     return object ~= nil and object.tag == "Card"
 end

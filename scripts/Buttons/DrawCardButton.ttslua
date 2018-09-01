@@ -15,7 +15,7 @@ DrawCardButton.params = {
 
 function DrawCardButton_OnClick(obj, player_clicker_color, alt_click)
     local color = DrawCardButton.getPlayerColorByDeckFieldGuid(obj.getGUID())
-    drawCardFromDeck(color)
+    TaskManager.addTask({color = color}, "DrawCardFromDeckWorker")
 end
 
 function DrawCardButton.getPlayerColorByDeckFieldGuid(guid)
