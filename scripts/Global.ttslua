@@ -1,3 +1,4 @@
+#include Libs\Queue
 #include Utils
 #include Const\Const
 #include TaskManager
@@ -8,6 +9,7 @@
 #include Buttons\DrawCardButton
 
 
+
 function onLoad()
     trash = getObjectFromGUID(const.game.trash)
     trash.createButton(StartGameButton.params)
@@ -16,6 +18,7 @@ function onLoad()
     TaskManager.addWorker(DiscardHandWorker, "DiscardHandWorker", 1 / 20)
     TaskManager.addWorker(ObjectPlacerWorker, "ObjectPlacerWorker", 1 / 20)
     TaskManager.addWorker(WaitWorker, "WaitWorker", 1 / 5)
+    TaskManager.addWorker(WaitForCardWorker, "WaitForCardWorker", 1 / 5)
 end
 
 function onPlayerTurn(color)
@@ -42,11 +45,23 @@ function onStartGame()
     return SetupGame()
 end
 
+
+
+
 function onScriptingButtonUp(index, color)
     if(index == 1)then
         drawCardFromDeck(color)
     elseif index == 2 then
-
+        local q1 = Queue.new()
+        local q2 = Queue.new()
+        q1:Add("a")
+        q1:Add("b")
+        q1:Add("c")
+        q2:Add("z")
+        q2:Add("x")
+        q1:Add("d")
+        print(q1:Get())
+        print(q2:Get())
     elseif index == 3 then
 
     end
