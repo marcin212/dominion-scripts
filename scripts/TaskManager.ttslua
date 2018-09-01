@@ -1,31 +1,8 @@
 TaskManager = {}
+TaskManager.Lock = false
 TaskManager.Workers = {}
-TaskManager.Queue = {
-    First = 0,
-    Last = -1,
-    List = {},
-    Add = function(value)
-        local last = TaskManager.Queue.Last + 1
-        TaskManager.Queue.Last = last
-        TaskManager.Queue.List[last] = value
-    end,
-    AddFirst = function()
-        local first = TaskManager.Queue.First - 1
-        TaskManager.Queue.First = first
-        TaskManager.Queue.List[first] = data
-    end,
-    Remove = function()
-        local first = TaskManager.Queue.First
-        if first > TaskManager.Queue.Last then error("list is empty") end
-        local value = TaskManager.Queue.List[first]
-        TaskManager.Queue.List[first] = nil -- to allow garbage collection
-        TaskManager.Queue.First = first + 1
-        return value
-    end,
-    Get = function()
-        return TaskManager.Queue.List[TaskManager.Queue.First]
-    end
-}
+TaskManager.Queue = Queue.new()
+TaskManager.WaitQueue = Queue.new()
 
 -- Add new data to process
 -- data is your table for worker
@@ -33,7 +10,7 @@ TaskManager.Queue = {
 -- returns true if the task has been added. False otherwise.
 function TaskManager.addTask(data, type)
     if(TaskManager.Workers[type]) then
-        TaskManager.Queue.Add({data = data, type = type})
+        TaskManager.Queue:Add({data = data, type = type})
         return true
     else
         return false, "Worker of type \"" .. type .."\" doesn't exists."
@@ -43,7 +20,7 @@ end
 
 function TaskManager.AddForceTask (data, type)
     if(TaskManager.Workers[type]) then
-        TaskManager.Queue.AddFirst({data = data, type = type})
+        TaskManager.WaitQueue:AddFirst({data = data, type = type})
         return true
     else
         return false, "Worker of type \"" .. type .."\" doesn't exists."
@@ -59,11 +36,20 @@ function TaskManager.addWorker(func, type, time)
         return false, "Worker of type \"" .. type .."\" exists"
     else
         TaskManager.Workers[type] = Wait.time(function()
-            local task = TaskManager.Queue.Get()
+            if(TaskManager.Lock) then return end
+            local task = TaskManager.Queue:Get()
+            --print("task" .. task.type)
             if(task ~= nil and task.type == type) then
+                TaskManager.Lock = true
                 if(not func(task.data)) then
-                    TaskManager.Queue.Remove()
+                    TaskManager.Queue:Remove()
                 end
+                TaskManager.Lock = false
+            end
+            local waitTask = TaskManager.WaitQueue:Get()
+            while waitTask ~= nil do
+                TaskManager.Queue:AddFirst(TaskManager.WaitQueue:Remove())
+                waitTask = TaskManager.WaitQueue:Get()
             end
         end, time, - 1)
         return true
