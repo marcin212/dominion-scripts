@@ -2,11 +2,12 @@
 #include Utils
 #include Const\Const
 #include TaskManager
+#include Event\PlayerTurn
 #include SetupGame\SetupGame
 #include TurnSteps
 #include Buttons\StartGameButton
 #include Buttons\DrawCardButton
-
+#include CardDrawManagement
 
 
 function onLoad()
